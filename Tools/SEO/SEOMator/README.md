@@ -1,6 +1,10 @@
 # SEOMATOR - tool list
 
 SEOMATOR is a website that provides some tools for SEO testing.
+
+This script takes in input the URI of the webpage to test and the id of the tool.
+For now, it returns a JSON file converted by the resulted HTML page of the tool used.
+
 This is the list with all of them with some notes about their usability.
 
 ### SEARCH ENGINE
