@@ -12,4 +12,9 @@ Tests and tool list:
       - pa-website-validator (https://github.com/italia/pa-website-validator)
   - Performance:
       - PageSpeed Insight (https://developers.google.com/speed/docs/insights/rest/v5/pagespeedapi/runpagespeed?hl=it)
-  
+
+
+
+Setup python virtual environment:
+    python -m venv .
+    bin/pip install -r requirements.txt
