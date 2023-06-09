@@ -12,6 +12,4 @@ Usage: `node dist [options] --type <type> --destination <folder> --report <name>
 
 Example: `node dist --type municipality --destination ../../../Output/pa-website-validator_out --report pa-website-validator_out --accuracy min --website https://www.comune.novellara.re.it/`
 
-Check the below github page for full option list.
-
-[Full doc](https://github.com/italia/pa-website-validator)
+Check [this github page](https://github.com/italia/pa-website-validator) for full option list.
