@@ -12,4 +12,4 @@ Performance, Accessibility, Best Practice and SEO (here is used mainly for perfo
 This script takes as a input the URI of the page, which you want to test the performace, and
 returns a JSON file with all the data (in the Output folder).
 
-Usage: `bin/python pagespeed.py <URI>`
+Usage: `python ./pagespeed.py <URI>`
