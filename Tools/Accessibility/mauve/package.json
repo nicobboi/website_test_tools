@@ -1,13 +1,11 @@
 {
-  "name": "test2",
+  "name": "mauve-cli",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "puppeteer": "^20",
     "puppeteer-utilz": "^4.0.8",
