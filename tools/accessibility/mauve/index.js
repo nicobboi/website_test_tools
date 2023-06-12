@@ -4,13 +4,13 @@ const puppeteer = require("puppeteer");
 const waitForDownload = require('puppeteer-utilz').waitForDownload;
 const url = process.argv[2];
 
-const tmpPath = path.resolve('./tmp');
-const downloadPath = path.resolve('./Output');
+const tmpPath = path.resolve(__dirname + '/tmp');
+const downloadPath = path.resolve('./output');
 (async () => {
   const browser = await puppeteer.launch({
     headless: "new",  // "new" or "false"
     defaultViewport: false,
-    userDataDir: "./user_data",
+    userDataDir: (__dirname + "/user_data"),
     args:[
       '--start-maximized' // you can also use '--start-fullscreen'
    ],
@@ -56,12 +56,12 @@ const downloadPath = path.resolve('./Output');
 
   await browser.close();
 
-  fs.readdir(downloadPath, function (err, files) {
+  /*fs.readdir(downloadPath, function (err, files) {
     if (err) {
         return console.log('Unable to scan directory: ' + err);
     } 
     files.forEach(function (file) {
         console.log(file); 
     });
-  });
+  });*/
 })();
