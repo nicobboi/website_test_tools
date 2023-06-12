@@ -18,5 +18,6 @@ Tests and tool list:
 Setup python virtual environment:
 ```
 python -m venv .
-bin/pip install -r requirements.txt
+source bin/activate
+pip install -r requirements.txt
 ```

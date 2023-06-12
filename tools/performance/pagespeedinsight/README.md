@@ -5,11 +5,16 @@ The UX data in PSI are based on the Chrome User Experience Report (CrUX) dataset
 PSI uses Lighthouse to analyze the URL in a simulated environment for the categories
 Performance, Accessibility, Best Practice and SEO (here is used mainly for performance).
 
-[Score docs](https://developers.google.com/speed/docs/insights/v5/about?hl=it)
+[Score docs](https://developers.google.com/speed/docs/insights/v5/about?hl=it) <br /><br />
 
 [API docs](https://developers.google.com/speed/docs/insights/rest/v5/pagespeedapi/runpagespeed)
 
-This script takes as a input the URI of the page, which you want to test the performace, and
-returns a JSON file with all the data (in the Output folder).
+This module takes as a input the URI of the page, which you want to test the performace, and
+returns a JSON file with all the data.
 
-Usage: `python ./pagespeed.py <URI>`
+### DOCS:
+```
+pagespeed.**test**(*URI*)
+    Runs a performance test, using the PageSpeed Insight's API, on the given URI and returns a JSON with all the data.
+
+```
