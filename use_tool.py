@@ -70,7 +70,7 @@ def score_from_grade(grade):
 
 # Runs the performance test (PageSpeed Insight) and prints the desired output
 # OUTPUT:
-#   PageSpeed Insight: performance score, number of audits, ... (TODO)
+#   PageSpeed Insight: performance score, number of audits, ... (TODO: add more)
 def performanceTest(uri):
     import tools.performance.pagespeedinsight.pagespeed as pg
 
@@ -88,19 +88,18 @@ def performanceTest(uri):
 # Runs the accessibility test (Mauve++) and prints the desired output
 # OUTPUT:
 #   Mauve++: ...
-def accessibilityTest(uri):
-    import os
+def accessibilityTest(uri):     # TODO: aspettare che si riprenda sito di Mauve...
     mauve_path = "./tools/accessibility/mauve/index.js"
-    mauve_json = "mauve-earl-reporthttps___www.comune.novellara.re.it_.json"
 
-    #with subprocess.Popen(["node", mauve_path, uri]) as proc:
-     #   proc.wait()
+    with subprocess.Popen(["node", mauve_path, uri]) as proc:
+        proc.wait()
 
-    with open("./output/" + mauve_json, "r+") as f:
-        res = f.read()
+    # report path; write the uri used without 'https://', so I removed it (this script does not include 'http')
+    report_path = "./tools/accessibility/mauve/output/mauve-earl-reporthttps___" + [uri, uri.removeprefix("https://")]["https://" in uri] + "_.json"
+    with open(report_path, "r+") as f:
+        #res = f.read()
         #print(res[-6])
-        f_size = os.stat("/home/nico/Scrivania/website_test_tools/output/mauve-earl-reporthttps___www.comune.novellara.re.it_.json").st_size
-        f.seek(f_size - 6)
+        f.seek(-6, 2)
         print(f.read())
         #f.write(f_size - 6)
         # TODO: eliminare quella virgola :(
@@ -108,9 +107,32 @@ def accessibilityTest(uri):
     #with open("./output/mauve-earl-reporthttps___www.comune.novellara.re.it_.json", "r") as f:
      #   output= json.load(f)
 
-def validationTest(uri):
-    print("Test " + uri)
 
+# Runs the validation test (pa-website-validator) and prints the desired output
+# OUTPUT:
+#   pa-website-validator: model compliace score, reccomandations tests score, ... (TODO: add more)
+def validationTest(uri):
+    pwv_path = "./tools/validation/pa-website-validator/"
+    out_fold = "./output/pwv_report"
+
+    print("Executing validation test...\n")
+    with subprocess.Popen(["node", pwv_path + "dist", "--type", "municipality", "--destination", out_fold, "--report", "report", \
+                          "--accuracy", "min", "--website", uri], stdout=subprocess.PIPE, stderr=subprocess.PIPE) as proc:
+        proc.wait()
+
+    with open(out_fold + "/report.json", "r") as f:
+        output = json.load(f);
+        mc_score = int(output['categories']['modelComplianceInformation']['score'] * 100)
+        rt_score = int(output['categories']['reccomandationsAndAdditionalTests']['score'] * 100)
+        print("Model compliance score: " + str(mc_score) + ".");
+        print("Reccomandations tests score: " + str(rt_score) + ".\n")
+
+    print("Validation test ended.\n")
+
+
+# Runs the SEO tests (SEOMator tools) and prints the desired output
+# OUTPUT:
+#   SEOMator tools: ...
 def SEOTest(uri):
     print("Test " + uri)
 

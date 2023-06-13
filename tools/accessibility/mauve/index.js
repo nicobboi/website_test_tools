@@ -5,7 +5,7 @@ const waitForDownload = require('puppeteer-utilz').waitForDownload;
 const url = process.argv[2];
 
 const tmpPath = path.resolve(__dirname + '/tmp');
-const downloadPath = path.resolve('./output');
+const downloadPath = path.resolve(__dirname + '/output');
 (async () => {
   const browser = await puppeteer.launch({
     headless: "new",  // "new" or "false"

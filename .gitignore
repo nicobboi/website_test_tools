@@ -163,4 +163,5 @@ bin/
 lib64
 pyvenv.cfg
 
-output/*
+output
+tmp
