@@ -2,10 +2,16 @@ const fs = require("fs");
 const path = require("path");
 const puppeteer = require("puppeteer");
 const waitForDownload = require('puppeteer-utilz').waitForDownload;
-const url = process.argv[2];
+const url = process.argv[2];  // site's url to run the accessibility test 
+const dest = process.argv[3]; // destination folder for the reports
 
 const tmpPath = path.resolve(__dirname + '/tmp');
-const downloadPath = path.resolve(__dirname + '/output');
+const downloadPath = path.resolve(dest);
+// check and create output folder
+if (!fs.existsSync(downloadPath)) {
+  fs.mkdirSync(downloadPath);
+}
+
 (async () => {
   const browser = await puppeteer.launch({
     headless: "new",  // "new" or "false"

@@ -87,25 +87,38 @@ def performanceTest(uri):
 
 # Runs the accessibility test (Mauve++) and prints the desired output
 # OUTPUT:
-#   Mauve++: ...
-def accessibilityTest(uri):     # TODO: aspettare che si riprenda sito di Mauve...
+#   Mauve++: audits passed compared to total audits + example of an audit
+def accessibilityTest(uri):  
     mauve_path = "./tools/accessibility/mauve/index.js"
 
-    with subprocess.Popen(["node", mauve_path, uri]) as proc:
+    print("Executing accessibility test...\n")
+    with subprocess.Popen(["node", mauve_path, uri, "./output/mauve_reports"]) as proc:
         proc.wait()
 
     # report path; write the uri used without 'https://', so I removed it (this script does not include 'http')
-    report_path = "./tools/accessibility/mauve/output/mauve-earl-reporthttps___" + [uri, uri.removeprefix("https://")]["https://" in uri] + "_.json"
-    with open(report_path, "r+") as f:
-        #res = f.read()
-        #print(res[-6])
-        f.seek(-6, 2)
-        print(f.read())
-        #f.write(f_size - 6)
-        # TODO: eliminare quella virgola :(
+    # mauve-earl-reporthttps___www.comune.novellara.re.it
+    report_path = "./output/mauve_reports/mauve-earl-report" + [uri, uri.translate(uri.maketrans("://", "___"))]["://" in uri] + ".json"
+    # there's an error in the json (",]"), so I manually removed it
+    replace_string = ""
+    with open(report_path, "r") as f:
+        replace_string = f.read()
 
-    #with open("./output/mauve-earl-reporthttps___www.comune.novellara.re.it_.json", "r") as f:
-     #   output= json.load(f)
+    replace_string = replace_string.replace(",\n\t]", "\n\t]")
+    with open(report_path, "w") as f:
+        f.write(replace_string)
+
+    with open(report_path, "r") as f:
+        output = json.load(f)
+        # compute the total number of audit passed compared to total audits
+        audits_passed = len([x for x in output['@graph'] if x['earl:result']['dcterms:title'] == "PASS"])
+        audits_total = len(output['@graph'])
+        audits_passed_perc = int(audits_passed / audits_total * 100)
+        print("Total number of audit passed: " + str(audits_passed) + "/" + str(audits_total) + " (" + str(audits_passed_perc) + "%)" + ".\n")
+
+        print("Example audit:")
+        print("Test: " + output['@graph'][1]['earl:result']['earl:info'] + ". Status: " + output['@graph'][1]['earl:result']['dcterms:title'] + ".\n")
+
+    print("Accessibility test ended.\n")
 
 
 # Runs the validation test (pa-website-validator) and prints the desired output
@@ -113,7 +126,7 @@ def accessibilityTest(uri):     # TODO: aspettare che si riprenda sito di Mauve.
 #   pa-website-validator: model compliace score, reccomandations tests score, ... (TODO: add more)
 def validationTest(uri):
     pwv_path = "./tools/validation/pa-website-validator/"
-    out_fold = "./output/pwv_report"
+    out_fold = "./output/pwv_reports"
 
     print("Executing validation test...\n")
     with subprocess.Popen(["node", pwv_path + "dist", "--type", "municipality", "--destination", out_fold, "--report", "report", \
