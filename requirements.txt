@@ -1,3 +1,4 @@
 click
 requests
 html_to_json
+beautifulsoup4

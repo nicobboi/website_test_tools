@@ -79,7 +79,7 @@ def performanceTest(uri):
     # PAGESPEED INSIGHT
     output = pg.test(uri)
     n_audit = len(output['lighthouseResult']['categories']['performance']['auditRefs'])
-    score = output['lighthouseResult']['categories']['performance']['score'] * 100
+    score = int(output['lighthouseResult']['categories']['performance']['score'] * 100)
     print("Score: " + str(score) + ".\nTotal number of audits done: " + str(n_audit) + ".\n")
             
     print("Performance test ended.\n")
@@ -92,12 +92,14 @@ def accessibilityTest(uri):
     mauve_path = "./tools/accessibility/mauve/index.js"
 
     print("Executing accessibility test...\n")
+
+    # MAUVE++
     with subprocess.Popen(["node", mauve_path, uri, "./output/mauve_reports"]) as proc:
         proc.wait()
 
-    # report path; write the uri used without 'https://', so I removed it (this script does not include 'http')
-    # mauve-earl-reporthttps___www.comune.novellara.re.it
+    # example: mauve-earl-reporthttps___www.comune.novellara.re.it
     report_path = "./output/mauve_reports/mauve-earl-report" + [uri, uri.translate(uri.maketrans("://", "___"))]["://" in uri] + ".json"
+    # ---------------------------------------------------------------------- #
     # there's an error in the json (",]"), so I manually removed it
     replace_string = ""
     with open(report_path, "r") as f:
@@ -106,7 +108,8 @@ def accessibilityTest(uri):
     replace_string = replace_string.replace(",\n\t]", "\n\t]")
     with open(report_path, "w") as f:
         f.write(replace_string)
-
+    # ---------------------------------------------------------------------- #
+    
     with open(report_path, "r") as f:
         output = json.load(f)
         # compute the total number of audit passed compared to total audits
@@ -147,7 +150,17 @@ def validationTest(uri):
 # OUTPUT:
 #   SEOMator tools: ...
 def SEOTest(uri):
-    print("Test " + uri)
+    import tools.seo.seomator.seomator as seo
+
+    print("Executing SEO test...\n")
+
+    # returns a dict with key=test name and value=result of the test
+    output = seo.test(uri)
+    for key, val in output.items(): 
+        if val != None: 
+            print(key + ": " + val + ".")
+
+    print("\nSEO test ended.\n")
 
 
 # Main module
