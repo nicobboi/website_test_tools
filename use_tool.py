@@ -1,5 +1,4 @@
-import subprocess
-import json
+from time import time
 import click
 
 @click.command()
@@ -16,20 +15,25 @@ def main(uri, test):
         validationTest
     ]
 
+    t_start = int(time())
     match test:
         case "SECURITY":
-            securityTest(uri)
+            tests[0](uri)
         case "PERFORMANCE":
-            performanceTest(uri)
+            tests[1](uri)
         case "ACCESSIBILITY":
-            accessibilityTest(uri)
+            tests[2](uri)
         case "SEO":
-            SEOTest(uri)
+            tests[3](uri)
         case "VALIDATION":
-            validationTest(uri)
+            tests[4](uri)
         case "ALL":
             for test in tests:
                 test(uri)
+    t_end = int(time())
+    t_elapsed = t_end - t_start
+
+    print("Elapsed time: " + [str((t_elapsed) / 60) + " min", str(t_elapsed) + " s"][t_elapsed < 60] + ".\n")
 
 # ALL TEST OUTPUT ARE DICT (use keys() to check the tools used for that output)
 
@@ -51,12 +55,12 @@ def securityTest(uri):
 def performanceTest(uri):
     import tools.performance.performancetest as performancetest
 
-    print("Executing PERFOMANCE test...\n")
+    print("Executing PERFORMANCE test...\n")
 
     performance_output = performancetest.run_test(uri)
     print(performance_output)
 
-    print("\nPerformance test ended.")
+    print("\nPerformance test ended.\n")
     
 
 # Runs the accessibility test (Mauve++) and prints the desired output

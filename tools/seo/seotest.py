@@ -35,7 +35,7 @@ def run_test(uri):
 
     print("\'Robot parser\' test started.")
     output["robot_parser"] = rp.test(uri)
-    print("Test ended")
+    print("Test ended\n")
 
     # ------------------------------------------------------------------------------- #
 
