@@ -62,6 +62,10 @@ if (!fs.existsSync(downloadPath)) {
 
   await browser.close();
 
+  fs.rmdir(tmpPath, (err) => {
+    if (err) throw err;
+  })
+
   /*fs.readdir(downloadPath, function (err, files) {
     if (err) {
         return console.log('Unable to scan directory: ' + err);
