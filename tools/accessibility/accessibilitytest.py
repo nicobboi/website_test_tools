@@ -39,9 +39,14 @@ def run_test(uri):
     with open(report_path, "r") as f:
         mauve_out = json.load(f)
         # compute the total number of audit passed compared to total audits
+        audits_passed = len([x for x in mauve_out['@graph'] if x['earl:result']['dcterms:title'] == "PASS"])
+        audits_total = len(mauve_out['@graph'])
+
         output["mauve++"] = {
-            "audits_passed": len([x for x in mauve_out['@graph'] if x['earl:result']['dcterms:title'] == "PASS"]),
-            "audits_total": len(mauve_out['@graph'])
+            "score": int(audits_passed / audits_total * 100),
+            "audits_passed": audits_passed,
+            "audits_total": audits_total,
+            "pdf_report": output_path + "/mauve-earl-report" + [uri, uri.replace("://", "___")]["://" in uri] + ".pdf"
         }
 
     print("Test ended.\n")

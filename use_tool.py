@@ -1,6 +1,8 @@
 from time import time
 import click
 
+# Script to test tools's outputs and to print them
+
 @click.command()
 @click.argument("uri")
 @click.argument("test")
@@ -33,7 +35,7 @@ def main(uri, test):
     t_end = int(time())
     t_elapsed = t_end - t_start
 
-    print("Elapsed time: " + [str((t_elapsed) / 60) + " min", str(t_elapsed) + " s"][t_elapsed < 60] + ".\n")
+    print("Elapsed time: ~" + [str(int((t_elapsed) / 60)) + " min", str(t_elapsed) + "s"][t_elapsed < 60] + ".\n")
 
 # ALL TEST OUTPUT ARE DICT (use keys() to check the tools used for that output)
 

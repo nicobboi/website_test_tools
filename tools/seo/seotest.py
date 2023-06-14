@@ -34,7 +34,10 @@ def run_test(uri):
     # ROBOT PARSER ------------------------------------------------------------------ #    
 
     print("\'Robot parser\' test started.")
-    output["robot_parser"] = rp.test(uri)
+    if output["pagespeed_seo"]["is_robots_txt_valid"]:
+        output["robot_parser"] = rp.test(uri)
+    else:
+        output["robot_parser"] = "Test not started because robots.txt is not valid!"
     print("Test ended\n")
 
     # ------------------------------------------------------------------------------- #

@@ -19,9 +19,15 @@ def run_test(uri):
     print("\'Security headers check\' test started.")
     with Popen([shcheck_path, "-j", uri], stdout=PIPE) as proc:
         shcheck_out = json.loads(proc.stdout.read())
+
+        h_pres = list(shcheck_out[uri]['present'].keys())
+        h_miss = shcheck_out[uri]['missing']
+
         output["sh-check"] = {
-            "h_pres": list(shcheck_out[uri]['present'].keys()),
-            "h_miss": shcheck_out[uri]['missing']
+            "n_headers_pres": len(h_pres),
+            "n_headers_miss": len(h_miss),
+            "headers_pres": h_pres,
+            "headers_miss": h_miss
         }
     
     print("Test ended.\n")
@@ -35,8 +41,12 @@ def run_test(uri):
     print("\'SSLlabs-scan\' test started.")
     with Popen([ssllabs_path, "--verbosity", "error", "--grade", uri], stdout=PIPE) as proc:
         ssllabs_scan_out = proc.stdout.read()
+
+        grade = str(ssllabs_scan_out).split(" ")[1][1] #retrieve the grade letter
+
         output["ssllabs-scan"] = {
-            "grade": score_from_grade(str(ssllabs_scan_out).split(" ")[1][1]) #retrieve the grade letter
+            "score": score_from_grade(grade),
+            "grade": grade
         }
 
     print("Test ended.\n")
@@ -49,16 +59,16 @@ def score_from_grade(grade):
     score = "0"
     match grade:
         case 'A':
-            score = "A, score >= 80"
+            score = "100"
         case 'B':
-            score = "B, score >= 65"
+            score = "80"
         case 'C':
-            score = "C, score >= 50"
+            score = "65"
         case 'D':
-            score = "D, score >= 35"
+            score = "50"
         case 'E':
-            score = "E, score >= 20"
+            score = "35"
         case 'F':
-            score = "F, score < 20"
+            score = "0"
             
     return score

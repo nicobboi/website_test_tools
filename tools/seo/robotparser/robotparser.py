@@ -20,7 +20,7 @@ def test(uri):
     rp.set_url(uri + "robots.txt")
     rp.read()
 
-    output['is_crawlable'] = rp.can_fetch("*", uri)
+    output['is_url_crawlable'] = rp.can_fetch("*", uri)
 
     if rp.site_maps() != None:
         output["sitemap_present"]["present"] = True
