@@ -1,6 +1,6 @@
 from time import time
+import sys
 import click
-import database.db_handler as db
 
 # Script to test tools's outputs and to print them
 
@@ -118,11 +118,30 @@ def SEOTest(uri, test_name):
     print("\nSEO test ended.\n")
 
 
-# Push a test result into the database
+# Push a test result into the database using the custom API
 def pushToDB(name, url, type, output):
+    import requests
+
     for tool in output:
         out = output[tool]
-        db.insertTest(name, url, type, tool, out['stats'], out['notes'], out['documents'])
+        payload = {
+            "name": name,
+            "url": url,
+            "type": type,
+            "tool": tool,
+            "stats": out['stats'],
+            "notes": out['notes'],
+            "documents": out['documents']
+        }
+
+        try:
+            # api request to send report's data into the database
+            res = requests.post("http://localhost:8000/pushItem", json=payload)
+        except requests.exceptions.ConnectionError:
+            print("Connection error.\nShutting down...")
+            sys.exit(1)
+
+        
 
 # Main module
 if __name__ == "__main__":

@@ -1,25 +1,33 @@
 from tinydb import TinyDB
 from datetime import datetime
+from pydantic import BaseModel
 import os
 
-def insertTest(test_name, URL, test_type, tool_name, stats, documents, notes):
+class Report(BaseModel):
+    name: str
+    url: str
+    type: str
+    tool: str
+    stats: dict | None
+    notes: dict | None
+    documents: dict | None
+
+def insertReport(report: Report):
     db_path = os.path.dirname(__file__) + "/reports_db.json"
 
     db = TinyDB(db_path, indent=4, separators=(',', ': '))
-    table = db.table(test_name)
+    table = db.table(report.name)
 
     element = {
-        "url": URL,
-        "type": test_type,
-        "tool": tool_name,
-        "stats": stats,
-        "notes": notes,
-        "documents": documents,
+        "url": report.url,
+        "type": report.type,
+        "tool": report.tool,
+        "stats": report.stats,
+        "notes": report.notes,
+        "documents": report.documents,
         "timestamp": str(datetime.now())
     }
 
     table.insert(element)
-
-    print(tool_name + " report inserito nel DB!")
 
 

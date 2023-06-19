@@ -66,19 +66,19 @@ def run_test(uri):
 
 # returns the correspondig score from the given grade
 def score_from_grade(grade):
-    score = "0"
+    score = 0
     match grade:
         case 'A':
-            score = "100"
+            score = 100
         case 'B':
-            score = "80"
+            score = 80
         case 'C':
-            score = "65"
+            score = 65
         case 'D':
-            score = "50"
+            score = 50
         case 'E':
-            score = "35"
+            score = 35
         case 'F':
-            score = "0"
+            score = 0
             
     return score
