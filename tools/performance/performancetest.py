@@ -2,7 +2,7 @@ from .pagespeedinsightperformance import pagespeedperf as psp
 
 def run_test(uri):
     output = {
-        "pagespeedinsightperf": None
+        "pagespeed_performance": None
     }
 
     # PAGESPEED INSIGHT PERFOMANCE ----------------------------------------------- #
@@ -10,9 +10,13 @@ def run_test(uri):
     print("\'PageSpeed Insight PERFORMANCE\' test started.")
 
     psp_out = psp.test(uri)
-    output['pagespeedinsightperf'] = {
-        "score": int(psp_out['lighthouseResult']['categories']['performance']['score'] * 100),
-        "n_audits": len(psp_out['lighthouseResult']['categories']['performance']['auditRefs'])
+    output['pagespeed_performance'] = {
+        "stats": {
+            "score": int(psp_out['lighthouseResult']['categories']['performance']['score'] * 100),
+            "n_audits": len(psp_out['lighthouseResult']['categories']['performance']['auditRefs'])
+        },
+        "notes": None,
+        "documents": None
     }
             
     print("Test ended.\n")

@@ -24,10 +24,15 @@ def run_test(uri):
         h_miss = shcheck_out[uri]['missing']
 
         output["sh-check"] = {
-            "n_headers_pres": len(h_pres),
-            "n_headers_miss": len(h_miss),
-            "headers_pres": h_pres,
-            "headers_miss": h_miss
+            "stats": {
+                "n_headers_pres": len(h_pres),
+                "n_headers_miss": len(h_miss)
+            },
+            "notes": {
+                "headers_pres": h_pres,
+                "headers_miss": h_miss
+            },
+            "documents": None
         }
     
     print("Test ended.\n")
@@ -45,8 +50,13 @@ def run_test(uri):
         grade = str(ssllabs_scan_out).split(" ")[1][1] #retrieve the grade letter
 
         output["ssllabs-scan"] = {
-            "score": score_from_grade(grade),
-            "grade": grade
+            "stats": {
+                "score": score_from_grade(grade)
+            },
+            "notes": {
+                "grade": grade
+            },
+            "documents": None
         }
 
     print("Test ended.\n")

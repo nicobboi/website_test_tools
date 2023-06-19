@@ -8,7 +8,7 @@ def run_test(uri):
         "mauve++": None
     }
 
-    script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) 
+    script_dir = os.path.dirname(__file__) 
 
     # MAUVE++ -------------------------------------------------------------------- #
 
@@ -43,10 +43,16 @@ def run_test(uri):
         audits_total = len(mauve_out['@graph'])
 
         output["mauve++"] = {
-            "score": int(audits_passed / audits_total * 100),
-            "audits_passed": audits_passed,
-            "audits_total": audits_total,
-            "pdf_report": output_path + "/mauve-earl-report" + [uri, uri.replace("://", "___")]["://" in uri] + ".pdf"
+            "stats": {
+                "score": int(audits_passed / audits_total * 100),
+                "audits_passed": audits_passed,
+                "audits_total": audits_total
+            },
+            "notes": None,
+            "documents": {
+                "json_report": output_path + "/mauve-earl-report" + [uri, uri.replace("://", "___")]["://" in uri] + ".json",
+                "pdf_report": output_path + "/mauve-earl-report" + [uri, uri.replace("://", "___")]["://" in uri] + ".pdf"
+            }
         }
 
     print("Test ended.\n")

@@ -21,3 +21,12 @@ python -m venv .
 source bin/activate
 pip install -r requirements.txt
 ```
+
+Usage:
+```
+python use_tool <URL> <test_type> <test_name>
+
+<URL> is the page you want to test on
+<test_type> is the type of test (ACCESSIBILITY, PERFORMANCE, SECURITY, VALIDATION, SEO, ALL)
+<test_name> the custom name of the overall test (used for the database)
+```

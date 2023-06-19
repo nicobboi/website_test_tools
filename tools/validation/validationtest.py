@@ -8,7 +8,7 @@ def run_test(uri):
         "pa-website-validator": None
     }
 
-    script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) 
+    script_dir = os.path.dirname(__file__) 
 
     # PA-WEBSITE-VALIDATOR ------------------------------------------------------- #
 
@@ -24,8 +24,15 @@ def run_test(uri):
     with open(out_fold + "report.json", "r") as f:
         pwt_out = json.load(f)
         output["pa-website-validator"] = {
-            "mc_score": int(pwt_out['categories']['modelComplianceInformation']['score'] * 100),
-            "rt_score": int(pwt_out['categories']['reccomandationsAndAdditionalTests']['score'] * 100)
+            "stats": {
+                "mc_score": int(pwt_out['categories']['modelComplianceInformation']['score'] * 100),
+                "rt_score": int(pwt_out['categories']['reccomandationsAndAdditionalTests']['score'] * 100)
+            },
+            "notes": None,
+            "documents": {
+                "json_report": out_fold + "report.json",
+                "html_report": out_fold + "report.html"
+            }
         }
 
     print("Test ended.\n")

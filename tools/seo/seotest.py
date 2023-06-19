@@ -22,9 +22,14 @@ def run_test(uri):
     robot_valid = bool(pss_out["lighthouseResult"]["audits"]["robots-txt"]["score"])
 
     output["pagespeed_seo"] = {
-        "seo_score": seo_score,
-        "n_audits": n_audits,
-        "is_robots_txt_valid": robot_valid,
+        "stats": {
+            "seo_score": seo_score,
+            "n_audits": n_audits
+        },
+        "notes": {
+            "is_robots_txt_valid": robot_valid
+        },
+        "documents": None
     }
 
     print("Test ended\n")
@@ -33,11 +38,17 @@ def run_test(uri):
 
     # ROBOT PARSER ------------------------------------------------------------------ #    
 
+    output["robot_parser"] = {
+        "stats": None,
+        "notes": None,
+        "documents": None
+    }
+
     print("\'Robot parser\' test started.")
-    if output["pagespeed_seo"]["is_robots_txt_valid"]:
-        output["robot_parser"] = rp.test(uri)
+    if output["pagespeed_seo"]["notes"]["is_robots_txt_valid"]:
+        output["robot_parser"]["notes"] = rp.test(uri)
     else:
-        output["robot_parser"] = "Test not started because robots.txt is not valid!"
+        output["robot_parser"]["notes"] = "Test not started because robots.txt is not valid!"
     print("Test ended\n")
 
     # ------------------------------------------------------------------------------- #

@@ -20,13 +20,13 @@ def test(uri):
     rp.set_url(uri + "robots.txt")
     rp.read()
 
-    output['is_url_crawlable'] = rp.can_fetch("*", uri)
+    output['is_crawlable'] = rp.can_fetch("*", uri)
 
     if rp.site_maps() != None:
         output["sitemap_present"]["present"] = True
-        output["sitemap_present"]["notes"] = "Sitemap parameter is presents in the robots.txt."
+        output["sitemap_present"]["notes"] = "Sitemap parameter is present in the robots.txt."
     else:
-        output["sitemap_present"]["notes"] = "Sitemap parameter is not presents in the robots.txt!"
+        output["sitemap_present"]["notes"] = "Sitemap parameter is not present in the robots.txt!"
 
         # list of commons sitemap files
         sitemap = [
