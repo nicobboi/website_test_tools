@@ -1,0 +1,100 @@
+{
+    "Novellara": {
+        "1": {
+            "url": "https://www.comune.novellara.re.it/",
+            "type": "security",
+            "tool": "sh-check",
+            "stats": {
+                "n_headers_pres": 1,
+                "n_headers_miss": 8
+            },
+            "notes": {
+                "headers_pres": [
+                    "Strict-Transport-Security"
+                ],
+                "headers_miss": [
+                    "X-Frame-Options",
+                    "X-Content-Type-Options",
+                    "Content-Security-Policy",
+                    "Referrer-Policy",
+                    "Permissions-Policy",
+                    "Cross-Origin-Embedder-Policy",
+                    "Cross-Origin-Resource-Policy",
+                    "Cross-Origin-Opener-Policy"
+                ]
+            },
+            "documents": null,
+            "timestamp": "2023-06-19 16:19:42.749461"
+        },
+        "2": {
+            "url": "https://www.comune.novellara.re.it/",
+            "type": "security",
+            "tool": "ssllabs-scan",
+            "stats": {
+                "score": "100"
+            },
+            "notes": {
+                "grade": "A"
+            },
+            "documents": null,
+            "timestamp": "2023-06-19 16:19:42.774107"
+        },
+        "3": {
+            "url": "https://www.comune.novellara.re.it/",
+            "type": "performance",
+            "tool": "pagespeed_performance",
+            "stats": {
+                "score": 42,
+                "n_audits": 57
+            },
+            "notes": null,
+            "documents": null,
+            "timestamp": "2023-06-19 16:20:08.685118"
+        },
+        "4": {
+            "url": "https://www.comune.novellara.re.it/",
+            "type": "accessibility",
+            "tool": "mauve++",
+            "stats": {
+                "score": 71,
+                "audits_passed": 1144,
+                "audits_total": 1598
+            },
+            "notes": null,
+            "documents": {
+                "json_report": "/home/nico/Scrivania/website_test_tools/tools/accessibility/mauve/reports/mauve-earl-reporthttps___www.comune.novellara.re.it.json",
+                "pdf_report": "/home/nico/Scrivania/website_test_tools/tools/accessibility/mauve/reports/mauve-earl-reporthttps___www.comune.novellara.re.it.pdf"
+            },
+            "timestamp": "2023-06-19 16:20:27.694314"
+        },
+        "5": {
+            "url": "https://www.comune.novellara.re.it/",
+            "type": "seo",
+            "tool": "pagespeed_seo",
+            "stats": {
+                "seo_score": 100,
+                "n_audits": 15
+            },
+            "notes": {
+                "is_robots_txt_valid": true
+            },
+            "documents": null,
+            "timestamp": "2023-06-19 16:20:40.598061"
+        },
+        "6": {
+            "url": "https://www.comune.novellara.re.it/",
+            "type": "validation",
+            "tool": "pa-website-validator",
+            "stats": {
+                "mc_score": 89,
+                "rt_score": 50
+            },
+            "notes": null,
+            "documents": {
+                "json_report": "/home/nico/Scrivania/website_test_tools/tools/validation/pa-website-validator/reports/report.json",
+                "html_report": "/home/nico/Scrivania/website_test_tools/tools/validation/pa-website-validator/reports/report.html"
+            },
+            "timestamp": "2023-06-19 16:27:09.094791"
+        }
+    }
+}

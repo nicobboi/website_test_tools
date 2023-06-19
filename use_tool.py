@@ -136,7 +136,7 @@ def pushToDB(name, url, type, output):
 
         try:
             # api request to send report's data into the database
-            res = requests.post("http://localhost:8000/pushItem", json=payload)
+            res = requests.post("http://localhost:8000/pushReport", json=payload)
         except requests.exceptions.ConnectionError:
             print("Connection error.\nShutting down...")
             sys.exit(1)
