@@ -4,7 +4,6 @@ from pydantic import BaseModel
 import os
 
 class Report(BaseModel):
-    name: str
     url: str
     type: str
     tool: str
@@ -14,15 +13,32 @@ class Report(BaseModel):
 
 db_path = os.path.dirname(__file__) + "/reports_db.json"
 
+# run this script to setup a default database
+def setupDB():
+    db = TinyDB(db_path, indent=4, separators=(',', ': '))
+    db.drop_tables()
+    db.truncate()
+
 # Function to push a report into the database
 def insertReport(report: Report):
     db = TinyDB(db_path, indent=4, separators=(',', ': '))
 
-    table = db.table(report.name)
+    # tabella corrisponde ai test su un link specifico
+    table = db.table(report.url)
+    # se non esiste (mai fatti test su quel link), la popolo con le sue proprieta'
+    '''
+    if not table:
+        table.insert({
+            "performance": [],
+            "seo": [],
+            "security": [],
+            "validation": [],
+            "accessibility": [],
+        })
+    '''
 
+    # inserisco l'elemento nella categoria corretta
     element = {
-        "url": report.url,
-        "type": report.type,
         "tool": report.tool,
         "stats": report.stats,
         "notes": report.notes,
@@ -30,7 +46,15 @@ def insertReport(report: Report):
         "timestamp": str(datetime.now())
     }
 
-    table.insert(element)
+    print(table.all()[0][report.type])
+
+    #table.update(addReportToCat(element), where(report.type).exists())
+
+def addReportToCat(item):
+    def transform(doc):
+        print(doc)
+
+    return transform
 
 # Function to remove a report in the database
 def removeReport(test_name: str, test_id: int):
@@ -58,5 +82,10 @@ def getScores(test_name: str):
     table = db.table(test_name)
     reports_db = Query()
 
-    return table.search(reports_db.stats.score.exists())
+    score_docs = table.search((reports_db.stats.score.exists()) & (reports_db.stats.score != None))
+
+    score_list = []
+
+if __name__ == "__main__":
+    setupDB()
 
