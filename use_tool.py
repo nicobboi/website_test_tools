@@ -54,7 +54,7 @@ def securityTest(uri, test_name):
 
     pushToDB(test_name, uri, "security", security_output)
 
-    print("\nSecurity test ended.\n")
+    print("Security test ended.\n")
 
 
 # Runs the performance test (PageSpeed Insight) and prints the desired output
@@ -70,7 +70,7 @@ def performanceTest(uri, test_name):
 
     pushToDB(test_name, uri, "performance", performance_output)
 
-    print("\nPerformance test ended.\n")
+    print("Performance test ended.\n")
     
 
 # Runs the accessibility test (Mauve++) and prints the desired output
@@ -84,7 +84,7 @@ def accessibilityTest(uri, test_name):
 
     pushToDB(test_name, uri, "accessibility", accessibility_out)
 
-    print("\nAccessibility test ended.\n")
+    print("Accessibility test ended.\n")
 
 
 # Runs the validation test (pa-website-validator) and prints the desired output
@@ -100,7 +100,7 @@ def validationTest(uri, test_name):
 
     pushToDB(test_name, uri, "validation", validation_out)
 
-    print("\nValidation test ended.\n")
+    print("Validation test ended.\n")
 
 
 # Runs the SEO tests and prints the output
@@ -115,7 +115,7 @@ def SEOTest(uri, test_name):
 
     pushToDB(test_name, uri, "seo", seo_output)
 
-    print("\nSEO test ended.\n")
+    print("SEO test ended.\n")
 
 
 # Push a test result into the database using the custom API
@@ -136,7 +136,7 @@ def pushToDB(name, url, type, output):
 
         try:
             # api request to send report's data into the database
-            res = requests.post("http://localhost:8000/pushReport", json=payload)
+            res = requests.post("http://localhost:8000/saveReport", json=payload)
         except requests.exceptions.ConnectionError:
             print("Connection error.\nShutting down...")
             sys.exit(1)

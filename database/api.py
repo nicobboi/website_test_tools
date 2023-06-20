@@ -11,7 +11,7 @@ def read_root():
     return {"Hello": "world!"}
 
 # push the item into the database
-@app.post("/pushReport")
+@app.post("/saveReport")
 def insert_item(report: db.Report):
     db.insertReport(report)
     return PlainTextResponse(content="Report successfully inserted into the database.")
@@ -20,3 +20,7 @@ def insert_item(report: db.Report):
 def remove_item(test_name: str, test_id: int):
     return db.removeReport(test_name, test_id)
     #return PlainTextResponse(content="Report successfully removed from the database.")
+
+@app.get("/getScores")
+def get_scores(test_name: str):
+    return db.getScores(test_name)

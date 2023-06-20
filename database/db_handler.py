@@ -1,4 +1,4 @@
-from tinydb import TinyDB, where
+from tinydb import TinyDB, where, Query
 from datetime import datetime
 from pydantic import BaseModel
 import os
@@ -12,11 +12,12 @@ class Report(BaseModel):
     notes: dict | None
     documents: dict | None
 
+db_path = os.path.dirname(__file__) + "/reports_db.json"
+
 # Function to push a report into the database
 def insertReport(report: Report):
-    db_path = os.path.dirname(__file__) + "/reports_db.json"
-
     db = TinyDB(db_path, indent=4, separators=(',', ': '))
+
     table = db.table(report.name)
 
     element = {
@@ -33,9 +34,8 @@ def insertReport(report: Report):
 
 # Function to remove a report in the database
 def removeReport(test_name: str, test_id: int):
-    db_path = os.path.dirname(__file__) + "/reports_db.json"
+    db = TinyDB(db_path)
 
-    db = TinyDB(db_path, indent=4, separators=(',', ': '))
     # check if the given table exists
     if not test_name in db.tables():
         return "Table with the given name doesn't exist."
@@ -49,4 +49,14 @@ def removeReport(test_name: str, test_id: int):
     return "Report with the given id doesn't exist."
     
 
+def getScores(test_name: str):
+    db = TinyDB(db_path)
+
+    # check if the given table exists
+    if not test_name in db.tables():
+        return "Table with the given name doesn't exist."
+    table = db.table(test_name)
+    reports_db = Query()
+
+    return table.search(reports_db.stats.score.exists())
 

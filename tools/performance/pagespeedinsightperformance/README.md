@@ -5,7 +5,7 @@ The UX data in PSI are based on the Chrome User Experience Report (CrUX) dataset
 PSI uses Lighthouse to analyze the URL in a simulated environment for the categories
 Performance, Accessibility, Best Practice and SEO (here is used mainly for performance).
 
-[Score docs](https://developers.google.com/speed/docs/insights/v5/about?hl=it) <br /><br />
+[Score docs](https://developers.google.com/speed/docs/insights/v5/about?hl=it) <br />
 
 [API docs](https://developers.google.com/speed/docs/insights/rest/v5/pagespeedapi/runpagespeed)
 

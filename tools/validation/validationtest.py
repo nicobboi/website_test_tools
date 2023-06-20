@@ -23,10 +23,15 @@ def run_test(uri):
 
     with open(out_fold + "report.json", "r") as f:
         pwt_out = json.load(f)
+
+        mc_score = int(pwt_out['categories']['modelComplianceInformation']['score'] * 100)
+        rt_score = int(pwt_out['categories']['reccomandationsAndAdditionalTests']['score'] * 100)
+        score = int((mc_score*9 + rt_score*1) / 10) # media pesata
         output["pa-website-validator"] = {
             "stats": {
-                "mc_score": int(pwt_out['categories']['modelComplianceInformation']['score'] * 100),
-                "rt_score": int(pwt_out['categories']['reccomandationsAndAdditionalTests']['score'] * 100)
+                "score": score,
+                "mc_score": mc_score,
+                "rt_score": rt_score
             },
             "notes": None,
             "documents": {

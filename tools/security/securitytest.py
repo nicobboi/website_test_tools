@@ -25,6 +25,7 @@ def run_test(uri):
 
         output["sh-check"] = {
             "stats": {
+                "score": None,
                 "n_headers_pres": len(h_pres),
                 "n_headers_miss": len(h_miss)
             },
@@ -44,10 +45,17 @@ def run_test(uri):
     ssllabs_path = script_dir + "/ssllabsscan/ssllabs-scan"
 
     print("\'SSLlabs-scan\' test started.")
-    with Popen([ssllabs_path, "--verbosity", "error", "--grade", uri], stdout=PIPE) as proc:
-        ssllabs_scan_out = proc.stdout.read()
+    with Popen([ssllabs_path, "--verbosity", "error", uri], stdout=PIPE) as proc:
+        ssllabs_scan_out = json.loads(proc.stdout.read())
 
-        grade = str(ssllabs_scan_out).split(" ")[1][1] #retrieve the grade letter
+        # save the report file
+        report_path = script_dir + "/ssllabsscan/reports"
+        if not os.path.exists(report_path):
+            os.mkdir(report_path)
+        with open(report_path + "/report.json", "w") as f:
+            json.dump(ssllabs_scan_out, f, indent=4)
+
+        grade = ssllabs_scan_out[0]['endpoints'][0]['grade'][0] # to get the grade (without the "+" for the "A") 
 
         output["ssllabs-scan"] = {
             "stats": {
@@ -56,7 +64,9 @@ def run_test(uri):
             "notes": {
                 "grade": grade
             },
-            "documents": None
+            "documents": {
+                "json_report": ssllabs_path + "/reports/report.json"
+            }
         }
 
     print("Test ended.\n")

@@ -1,7 +1,6 @@
 from subprocess import Popen
 import json
 import os
-import inspect
 
 def run_test(uri):
     output = {
@@ -16,17 +15,17 @@ def run_test(uri):
     mauve_path = script_dir + "/mauve/index.js"
     # report download path
     output_path = script_dir + "/mauve/reports"
-    # if the url has '/' as last char, it will be removed
-    if uri[-1] == '/':
-        uri = uri[0:-1]
 
     print("\'Mauve++\' test started.")
 
     with Popen(["node", mauve_path, uri, output_path]) as proc:
         proc.wait()
 
+    # if the url has '/' as last char, it will be removed
+    if uri[-1] == '/':
+        uri = uri[0:-1]
     # example: mauve-earl-reporthttps___www.comune.novellara.re.it
-    report_path = output_path + "/mauve-earl-report" + [uri, uri.replace("://", "___")]["://" in uri] + ".json"
+    report_path = output_path + "/mauve-earl-report" + [uri, uri.replace("://", "___")]["://" in uri] + "_.json"
     
     # there's an error in the json (",]"), so I manually removed it
     replace_string = ""
