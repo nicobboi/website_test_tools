@@ -23,6 +23,7 @@ def run_test(uri):
         h_pres = list(shcheck_out[uri]['present'].keys())
         h_miss = shcheck_out[uri]['missing']
 
+        ''' OLD OUTPUT (TinyDB)
         output["sh-check"] = {
             "stats": {
                 "score": None,
@@ -35,7 +36,15 @@ def run_test(uri):
             },
             "documents": None
         }
+        '''
     
+        # NEW OUTPUT (SQLite)
+        output['sh-check'] = {
+            "scores": None,
+            "notes": "Security headers present: " + str(len(h_pres)) + ". Missing: " + str(len(h_miss)),
+            "json_report": shcheck_out
+        }
+
     print("Test ended.\n")
 
     # ---------------------------------------------------------------------------- #
@@ -48,15 +57,9 @@ def run_test(uri):
     with Popen([ssllabs_path, "--verbosity", "error", uri], stdout=PIPE) as proc:
         ssllabs_scan_out = json.loads(proc.stdout.read())
 
-        # save the report file
-        report_path = script_dir + "/ssllabsscan/reports"
-        if not os.path.exists(report_path):
-            os.mkdir(report_path)
-        with open(report_path + "/report.json", "w") as f:
-            json.dump(ssllabs_scan_out, f, indent=4)
-
         grade = ssllabs_scan_out[0]['endpoints'][0]['grade'][0] # to get the grade (without the "+" for the "A") 
 
+        ''' OLD OUTPUT (TinyDB)
         output["ssllabs-scan"] = {
             "stats": {
                 "score": score_from_grade(grade)
@@ -67,6 +70,16 @@ def run_test(uri):
             "documents": {
                 "json_report": ssllabs_path + "/reports/report.json"
             }
+        }
+        '''
+
+        # NEW OUTPUT (SQLite)
+        output['ssllabs-scan'] = {
+            "scores": {
+                "score_from_grade": score_from_grade(grade)
+            },
+            "notes": "SSL certificate's grade: " + grade,
+            "json_report": ssllabs_scan_out[0]
         }
 
     print("Test ended.\n")

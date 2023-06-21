@@ -1,25 +1,24 @@
 from fastapi import FastAPI
 
-import db_handler as db
+#import db_handler as db
+import db_handler_sqlite as dbs
 
 app = FastAPI()
 
-# test the api
-@app.get("/")
-def read_root():
-    return {"Hello": "world!"}
+
+@app.on_event("startup")
+def startup():
+    dbs.db_startup()
+
+
+@app.on_event("shsutdown")
+def shutdown():
+    dbs.db_shutdown()
 
 # push the item into the database
 @app.post("/saveReport")
-def insert_item(report: db.Report):
-    db.insertReport(report)
+def insert_item(report: dbs.Report):
+    #dbs.insert_report(report)
+    print(report.url)
 
 
-@app.post("/removeReport")
-def remove_item(test_name: str, test_id: int):
-    return db.removeReport(test_name, test_id)
-
-
-@app.get("/getScores")
-def get_scores(test_name: str):
-    return db.getScores(test_name)

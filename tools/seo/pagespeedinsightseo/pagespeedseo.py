@@ -1,5 +1,4 @@
-import requests, os, json
-from datetime import datetime
+import requests
 
 # Runs the PageSpeed Insight's API for SEO testing on the given URL
 # Returns a JSON with all the data
@@ -17,17 +16,6 @@ def test(uri):
     res = requests.get(url, params=params)
     output = res.json()
 
-    reports_dir = os.path.dirname(__file__) + "/reports"
-
-    # if not exists, creates the output folder for reports
-    if not os.path.exists(reports_dir):
-        os.mkdir(reports_dir)
-
-    # saves the report in a JSON
-    output_file = reports_dir + "/report__" + datetime.now().strftime("%d%m%Y_%H%M%S") + "__.json"
-    with open(output_file, "w") as f:
-        json.dump(output, f, indent=4)
-
     # return directly the content of the JSON and the path of the report file
-    return output, output_file
+    return output
 

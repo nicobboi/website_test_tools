@@ -15,6 +15,7 @@ downloads/
 eggs/
 .eggs/
 lib/
+include/
 lib64/
 parts/
 sdist/
@@ -165,3 +166,4 @@ pyvenv.cfg
 
 reports
 database/*.json
+database/sqlite_db/*

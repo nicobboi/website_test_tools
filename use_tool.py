@@ -7,8 +7,7 @@ import click
 @click.command()
 @click.argument("uri")
 @click.argument("test_type")
-@click.argument("test_name")
-def main(uri, test_type, test_name):
+def main(uri, test_type):
     print("Testing \'" + uri + "\'.\nMode: " + test_type + ".\n")
 
     tests = [
@@ -22,18 +21,18 @@ def main(uri, test_type, test_name):
     t_start = int(time())
     match test_type:
         case "SECURITY":
-            tests[0](uri, test_name)
+            tests[0](uri)
         case "PERFORMANCE":
-            tests[1](uri, test_name)
+            tests[1](uri)
         case "ACCESSIBILITY":
-            tests[2](uri, test_name)
+            tests[2](uri)
         case "SEO":
-            tests[3](uri, test_name)
+            tests[3](uri)
         case "VALIDATION":
-            tests[4](uri, test_name)
+            tests[4](uri)
         case "ALL":
             for test in tests:
-                test(uri, test_name)
+                test(uri)
         case _:
             return print("Test type not valid.")
     t_end = int(time())
@@ -44,7 +43,7 @@ def main(uri, test_type, test_name):
 # ALL TEST OUTPUT ARE DICT (use keys() to check the tools used for that output)
 
 # Runs the security tests (ssllabs-scan and shcheck) and prints the desired output
-def securityTest(uri, test_name):
+def securityTest(uri):
     import tools.security.securitytest as securitytest
 
     print("Executing SECURITY test... \n")
@@ -52,7 +51,7 @@ def securityTest(uri, test_name):
     security_output = securitytest.run_test(uri)
     #print(security_output)
 
-    pushToDB(test_name, uri, "security", security_output)
+    pushToDB(uri, "security", security_output)
 
     print("Security test ended.\n")
 
@@ -60,7 +59,7 @@ def securityTest(uri, test_name):
 # Runs the performance test (PageSpeed Insight) and prints the desired output
 # OUTPUT:
 #   PageSpeed Insight: performance score, number of audits, ... (TODO: add more)
-def performanceTest(uri, test_name):
+def performanceTest(uri):
     import tools.performance.performancetest as performancetest
 
     print("Executing PERFORMANCE test...\n")
@@ -68,13 +67,13 @@ def performanceTest(uri, test_name):
     performance_output = performancetest.run_test(uri)
     #print(performance_output)
 
-    pushToDB(test_name, uri, "performance", performance_output)
+    pushToDB(uri, "performance", performance_output)
 
     print("Performance test ended.\n")
     
 
 # Runs the accessibility test (Mauve++) and prints the desired output
-def accessibilityTest(uri, test_name):  
+def accessibilityTest(uri):  
     import tools.accessibility.accessibilitytest as accessibilitytest
 
     print("Executing ACCESSIBILITY test.\n")
@@ -82,7 +81,7 @@ def accessibilityTest(uri, test_name):
     accessibility_out = accessibilitytest.run_test(uri)
     #print(accessibility_out)
 
-    pushToDB(test_name, uri, "accessibility", accessibility_out)
+    pushToDB(uri, "accessibility", accessibility_out)
 
     print("Accessibility test ended.\n")
 
@@ -90,7 +89,7 @@ def accessibilityTest(uri, test_name):
 # Runs the validation test (pa-website-validator) and prints the desired output
 # OUTPUT:
 #   pa-website-validator: model compliace score, reccomandations tests score, ... (TODO: add more)
-def validationTest(uri, test_name):
+def validationTest(uri):
     import tools.validation.validationtest as validationtest
 
     print("Executing VALIDATION test...\n")
@@ -98,13 +97,13 @@ def validationTest(uri, test_name):
     validation_out = validationtest.run_test(uri)
     #print(validation_out)
 
-    pushToDB(test_name, uri, "validation", validation_out)
+    pushToDB(uri, "validation", validation_out)
 
     print("Validation test ended.\n")
 
 
 # Runs the SEO tests and prints the output
-def SEOTest(uri, test_name):
+def SEOTest(uri):
     import tools.seo.seotest as seotest
 
     print("Executing SEO test...\n")
@@ -113,25 +112,24 @@ def SEOTest(uri, test_name):
     seo_output = seotest.run_test(uri)
     #print(seo_output)
 
-    pushToDB(test_name, uri, "seo", seo_output)
+    pushToDB(uri, "seo", seo_output)
 
     print("SEO test ended.\n")
 
 
 # Push a test result into the database using the custom API
-def pushToDB(name, url, type, output):
+def pushToDB(url, type, output):
     import requests
 
     for tool in output:
         out = output[tool]
         payload = {
-            "name": name,
             "url": url,
             "type": type,
             "tool": tool,
-            "stats": out['stats'],
+            "scores": out['scores'],
             "notes": out['notes'],
-            "documents": out['documents']
+            "json_report": out['json_report']
         }
 
         try:

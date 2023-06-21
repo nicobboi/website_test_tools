@@ -4,6 +4,8 @@ import urllib.robotparser
 # Checks if the given URI is crawlable (following the robots.txt rules) 
 # and if there's at least one sitemap file at the given URI
 def test(uri):
+    output = ""
+    '''
     output = {
         "is_crawlable": False,
         "sitemap_present": {
@@ -11,6 +13,7 @@ def test(uri):
             "notes": ""
         }
     }
+    '''
 
     if uri[-1] != '/':
         uri += '/'
@@ -20,14 +23,15 @@ def test(uri):
     rp.set_url(uri + "robots.txt")
     rp.read()
 
-    output['is_crawlable'] = rp.can_fetch("*", uri)
+    if rp.can_fetch("*", uri):
+        output += "Url crawlable!\n\n"
+    else:
+        output += "Url not crawlable!\n\n"
 
     if rp.site_maps() != None:
-        output["sitemap_present"]["present"] = True
-        output["sitemap_present"]["notes"] = "Sitemap parameter is present in the robots.txt."
+        output += "Sitemap is present!\n"
+        output += "Sitemap parameter is present in the robots.txt.\n\n"
     else:
-        output["sitemap_present"]["notes"] = "Sitemap parameter is not present in the robots.txt!"
-
         # list of commons sitemap files
         sitemap = [
             "sitemap.xml",
@@ -49,7 +53,9 @@ def test(uri):
         for s in sitemap:
             res = requests.get(uri + s)
             if res.status_code == 200:
-                output["sitemap_present"]["present"] = True
+                output += "Sitemap is present!\n"
+            
+        output += "Sitemap parameter is not present in the robots.txt!\n\n"
         
     # TODO: controllare se i siti presenti nella sitemap non sono rotti
 

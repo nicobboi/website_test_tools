@@ -14,14 +14,15 @@ def run_test(uri):
     print("\'PageSpeed Insight SEO\' test started.")
 
     # runs pagespeed insight seo test
-    pss_out, pss_report_path = pss.test(uri)
+    pss_out = pss.test(uri)
     
     try:
         # organizing pss output 
         seo_score = int(pss_out["lighthouseResult"]["categories"]["seo"]["score"] * 100)
-        n_audits = len(pss_out["lighthouseResult"]["categories"]["seo"]["auditRefs"])
+        # n_audits = len(pss_out["lighthouseResult"]["categories"]["seo"]["auditRefs"])
         robot_valid = bool(pss_out["lighthouseResult"]["audits"]["robots-txt"]["score"])
 
+        ''' OLD OUTPUT (TinyDB)
         output["pagespeed_seo"] = {
             "stats": {
                 "score": seo_score,
@@ -34,6 +35,17 @@ def run_test(uri):
                 "json_report": pss_report_path
             }
         }
+        '''
+
+        # NEW OUTPUT (SQLite)
+        output['pagespeed_seo'] = {
+            "scores": {
+                "seo_score": seo_score,
+            },
+            "notes": None,
+            "json_report": pss_out
+        }
+
     except KeyError:
         print("Error on \'PageSpeed Insight (SEO)\' test.\n")
         output['pagespeed_seo'] = {
@@ -51,18 +63,17 @@ def run_test(uri):
     # ROBOT PARSER ------------------------------------------------------------------ #    
 
     output["robot_parser"] = {
-        "stats": None,
+        "scores": None,
         "notes": None,
-        "documents": None
+        "json_report": None
     }
 
     print("\'Robot parser\' test started.")
-    if output["pagespeed_seo"]["notes"]["is_robots_txt_valid"]:
-        output["robot_parser"]["notes"] = rp.test(uri)
+    if robot_valid:
+        output["robot_parser"]["notes"] = "Robots.txt is valid!\n\n"
+        output["robot_parser"]["notes"] += rp.test(uri)
     else:
-        output["robot_parser"]["notes"] = {
-                "info": "Test not started because robots.txt is not valid!"
-            }
+        output["robot_parser"]["notes"] = "Test not started because robots.txt is not valid!"
     print("Test ended\n")
 
     # ------------------------------------------------------------------------------- #

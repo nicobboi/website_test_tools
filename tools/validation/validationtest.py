@@ -26,7 +26,7 @@ def run_test(uri):
 
         mc_score = int(pwt_out['categories']['modelComplianceInformation']['score'] * 100)
         rt_score = int(pwt_out['categories']['reccomandationsAndAdditionalTests']['score'] * 100)
-        score = int((mc_score*9 + rt_score*1) / 10) # media pesata
+        ''' OLD OUTPUT (TinyDB)
         output["pa-website-validator"] = {
             "stats": {
                 "score": score,
@@ -38,6 +38,17 @@ def run_test(uri):
                 "json_report": out_fold + "report.json",
                 "html_report": out_fold + "report.html"
             }
+        }
+        '''
+
+        # NEW OUTPUT (SQLite)
+        output['pa-website-validator'] = {
+            "scores": {
+                "modelcompliance_score": mc_score,
+                "reccomandationstests_score": rt_score
+            },
+            "notes": None,
+            "json_report": pwt_out
         }
 
     print("Test ended.\n")

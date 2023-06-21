@@ -9,9 +9,10 @@ def run_test(uri):
 
     print("\'PageSpeed Insight PERFORMANCE\' test started.")
 
-    psp_out, psp_report_path = psp.test(uri)
+    psp_out = psp.test(uri)
 
     try:
+        ''' OLD OUTPUT (TinyDB)
         output['pagespeed_performance'] = {
             "stats": {
                 "score": int(psp_out['lighthouseResult']['categories']['performance']['score'] * 100),
@@ -24,6 +25,17 @@ def run_test(uri):
                 "json_report": psp_report_path
             }
         }
+        '''
+
+        # NEW OUTPUT (SQLite)
+        output['pagespeed_performance'] = {
+            "scores": {
+                "performance_score":  int(psp_out['lighthouseResult']['categories']['performance']['score'] * 100),
+            },
+            "notes": "Loading speed: " + psp_out['loadingExperience']['overall_category'],
+            "json_report": psp_out
+        }
+        
     except KeyError:
         print("Error on \'PageSpeed Insight (PERFORMANCE)\' test.\n")
         output['pagespeed_performance'] = {
