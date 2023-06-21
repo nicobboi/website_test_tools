@@ -3,5 +3,3 @@ requests
 tinydb
 fastapi
 uvicorn[standard]
-databases[aiosqlite]
-alembic

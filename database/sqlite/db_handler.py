@@ -1,11 +1,21 @@
-import os
-import sqlite3
-from sqlite3 import Error
-from databases import Database
+import models
+from sqlalchemy.orm import Session
 
-from datetime import datetime
 from pydantic import BaseModel
+from datetime import datetime
 
+'''
+    GUARDA: 
+    https://www.tutorialspoint.com/sqlalchemy/sqlalchemy_orm_working_with_related_objects.htm
+    https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html#adding-relationships-to-mapped-classes-after-declaration
+
+    TODO: sistemare input rispetto a relazioni (sono liste/attributo dell'instanza!)
+        + impostare input da chiamata API come input della RUN (quindi con tutti i report dei tool messi insieme!)
+'''
+
+
+# model for the data received to insert into the database
+# TODO: deve diventare input della RUN (output tool messi tutti insieme)
 class Report(BaseModel):
     url: str
     type: str
@@ -15,14 +25,34 @@ class Report(BaseModel):
     json_report: dict | None
 
 
-database = Database("sqlite+aiosqlite://./sqlite_db/app.db")
+# DA SISTEMARE!!!!
+def insert_report(db: Session, report: Report):
+    run_record = models.Run(
+        urk=report.url,
+        timestamp=datetime.now(),
+    )
+
+    report_record = models.Report(
+        notes=report.notes,
+        json_report=report.json_report,
+    )
+
+    report_record.tools += [
+        models.Tool(
+            name=report.tool,
+            type=report.type
+        )
+    ]
 
 
-async def db_startup():
-    await database.connect()
+    for score_name, score in report.scores:
+        score_record = models.Tool(
+            name=score_name,
+            score=score
+        )
 
-async def db_shutdown():
-    await database.disconnect()
+
+
 
 
 
