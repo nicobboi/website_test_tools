@@ -40,8 +40,12 @@ def main():
 
 # push a new set of reports into the db 
 @app.post("/saveReport")
-def push_report(item: dba.Item, db: Session = Depends(get_db)):
-    return dba.insert_report(db, item)
+def insert(item: dba.Item, db: Session = Depends(get_db)):
+    return dba.insert_reports(db, item)
+
+@app.post("/deleteReport")
+def delete(report_id: int, db: Session = Depends(get_db)):
+    return dba.delete_report(db, report_id)
 
 
 

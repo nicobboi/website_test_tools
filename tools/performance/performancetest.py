@@ -9,25 +9,11 @@ def run_test(uri):
 
     print("\'PageSpeed Insight PERFORMANCE\' test started.")
 
+    # run script for pagespeed insight test
     psp_out = psp.test(uri)
 
     try:
-        ''' OLD OUTPUT (TinyDB)
-        output['pagespeed_performance'] = {
-            "stats": {
-                "score": int(psp_out['lighthouseResult']['categories']['performance']['score'] * 100),
-                "n_audits": len(psp_out['lighthouseResult']['categories']['performance']['auditRefs'])
-            },
-            "notes": {
-                "overall_loading_speed": psp_out['loadingExperience']['overall_category'],
-            },
-            "documents": {
-                "json_report": psp_report_path
-            }
-        }
-        '''
-
-        # NEW OUTPUT (SQLite)
+        # organize the output
         output['pagespeed_performance'] = {
             "scores": {
                 "performance_score":  int(psp_out['lighthouseResult']['categories']['performance']['score'] * 100),

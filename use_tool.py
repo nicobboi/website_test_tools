@@ -4,6 +4,7 @@ import click
 
 # Script to test tools's outputs and to print them
 
+# global list that stores all reports which will be sent to db 
 run_reports = []
 
 @click.command()
@@ -123,7 +124,7 @@ def SEOTest(uri):
     print("SEO test ended.\n")
 
 
-
+# TEST FUNCTION to send data into the db 
 def Test(uri):
     print("Test API!")
 
@@ -140,7 +141,9 @@ def Test(uri):
 
     addToReport("test_type", output)
 
-# Push a test result into the database using the custom API
+
+
+# add the report in the global list of reports
 def addToReport(type, output):
     for tool in output:
         out = output[tool]
@@ -153,6 +156,7 @@ def addToReport(type, output):
             'json_report': out['json_report']
         })
 
+# Push a test result into the database using the custom API
 def pushToDB(url):
     import requests
 

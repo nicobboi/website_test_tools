@@ -11,7 +11,7 @@ class Run(Base):
     id          = Column(Integer, primary_key=True, index=True)
     url         = Column(String, nullable=False)
 
-    reports     = relationship("Report", back_populates="run")
+    reports     = relationship("Report", back_populates="run", cascade="all, delete, delete-orphan")
 
 # Report 1:N Score (one report has more scores, one score is in one report)
 # Report N:1 Tool
@@ -20,14 +20,14 @@ class Report(Base):
     __tablename__ = "reports"
 
     id          = Column(Integer, primary_key=True, index=True)
-    tool_id     = Column(Integer, ForeignKey("tools.id", onupdate="CASCADE", ondelete="CASCADE"))
+    tool_id     = Column(Integer, ForeignKey("tools.id", ondelete="NO ACTION"))
     notes       = Column(Text, nullable=True)
     json_report = Column(JSON, nullable=True)
-    run_id      = Column(Integer, ForeignKey("runs.id", onupdate="CASCADE", ondelete="CASCADE"))
+    run_id      = Column(Integer, ForeignKey("runs.id", ondelete="CASCADE"))
     timestamp   = Column(DateTime, nullable=False)
     
     tool        = relationship("Tool", back_populates="reports")
-    scores      = relationship("Score", back_populates="report")
+    scores      = relationship("Score", back_populates="report", cascade="all, delete, delete-orphan")
     run         = relationship("Run", back_populates="reports")
 
 
@@ -50,6 +50,6 @@ class Score(Base):
     id          = Column(Integer, primary_key=True, index=True)
     name        = Column(String, nullable=False)
     score       = Column(Integer, nullable=False)
-    report_id   = Column(Integer, ForeignKey("reports.id", onupdate="CASCADE", ondelete="CASCADE"))
+    report_id   = Column(Integer, ForeignKey("reports.id", ondelete="CASCADE"))
 
     report      = relationship("Report", back_populates="scores")

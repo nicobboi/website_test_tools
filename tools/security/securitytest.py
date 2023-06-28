@@ -22,23 +22,7 @@ def run_test(uri):
 
         h_pres = list(shcheck_out[uri]['present'].keys())
         h_miss = shcheck_out[uri]['missing']
-
-        ''' OLD OUTPUT (TinyDB)
-        output["sh-check"] = {
-            "stats": {
-                "score": None,
-                "n_headers_pres": len(h_pres),
-                "n_headers_miss": len(h_miss)
-            },
-            "notes": {
-                "headers_pres": h_pres,
-                "headers_miss": h_miss
-            },
-            "documents": None
-        }
-        '''
     
-        # NEW OUTPUT (SQLite)
         output['sh-check'] = {
             "scores": None,
             "notes": "Security headers present: " + str(len(h_pres)) + ". Missing: " + str(len(h_miss)),
@@ -59,21 +43,6 @@ def run_test(uri):
 
         grade = ssllabs_scan_out[0]['endpoints'][0]['grade'][0] # to get the grade (without the "+" for the "A") 
 
-        ''' OLD OUTPUT (TinyDB)
-        output["ssllabs-scan"] = {
-            "stats": {
-                "score": score_from_grade(grade)
-            },
-            "notes": {
-                "grade": grade
-            },
-            "documents": {
-                "json_report": ssllabs_path + "/reports/report.json"
-            }
-        }
-        '''
-
-        # NEW OUTPUT (SQLite)
         output['ssllabs-scan'] = {
             "scores": {
                 "score_from_grade": score_from_grade(grade)
@@ -87,7 +56,7 @@ def run_test(uri):
 
     return output
 
-# returns the correspondig score from the given grade
+# returns the corresponding score from the given grade
 def score_from_grade(grade):
     score = 0
     match grade:

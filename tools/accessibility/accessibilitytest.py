@@ -41,22 +41,6 @@ def run_test(uri):
         audits_passed = len([x for x in mauve_out['@graph'] if x['earl:result']['dcterms:title'] == "PASS"])
         audits_total = len(mauve_out['@graph'])
 
-        ''' OLD OUTPUT (TinyDB)
-        output["mauve++"] = {
-            "stats": {
-                "score": int(audits_passed / audits_total * 100),
-                "audits_passed": audits_passed,
-                "audits_total": audits_total
-            },
-            "notes": None,
-            "documents": {
-                "json_report": output_path + "/mauve-earl-report" + [uri, uri.replace("://", "___")]["://" in uri] + ".json",
-                # "pdf_report": output_path + "/mauve-earl-report" + [uri, uri.replace("://", "___")]["://" in uri] + ".pdf"
-            }
-        }
-        '''
-
-        # NEW OUTPUT (SQLite)
         output['mauve++'] = {
             "scores": {
                 "overall": int(audits_passed / audits_total * 100),

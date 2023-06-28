@@ -26,22 +26,7 @@ def run_test(uri):
 
         mc_score = int(pwt_out['categories']['modelComplianceInformation']['score'] * 100)
         rt_score = int(pwt_out['categories']['reccomandationsAndAdditionalTests']['score'] * 100)
-        ''' OLD OUTPUT (TinyDB)
-        output["pa-website-validator"] = {
-            "stats": {
-                "score": score,
-                "mc_score": mc_score,
-                "rt_score": rt_score
-            },
-            "notes": None,
-            "documents": {
-                "json_report": out_fold + "report.json",
-                "html_report": out_fold + "report.html"
-            }
-        }
-        '''
 
-        # NEW OUTPUT (SQLite)
         output['pa-website-validator'] = {
             "scores": {
                 "modelcompliance_score": mc_score,
