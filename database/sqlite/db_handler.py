@@ -1,6 +1,6 @@
 from .models import *
 from sqlalchemy.orm import Session
-from sqlalchemy import select, delete
+from sqlalchemy import select
 
 from pydantic import BaseModel
 from datetime import datetime
@@ -57,10 +57,31 @@ def insert_reports(db: Session, item: Item):
 
 
 # delete a report by his ID
-def delete_report(db: Session, report_id: int):
-    db.delete(db.get(Report, report_id))
+def delete_item(db: Session, report_id, run_id):
+    if report_id != None:
+        db.delete(db.get(Report, report_id))
+    if run_id != None:
+        db.delete(db.get(Run, run_id))
     db.commit()
 
 
+# return all scores form all report of a specified run (between two datetime if are given)
+def get_scores(db: Session, url, date_start, date_end):
+    # Selects tools name and scores info of all the reports of the specified run
+    query = select(Tool.name, Tool.type, Score.name, Score.score) \
+        .join(Report, Tool.reports) \
+        .join(Run) \
+        .where(Run.url == url, Report.id == Score.report_id)
+    
+    # if specified, filter by datetime
+    if date_start != None and date_end != None:
+        query = query.filter(Report.timestamp > date_start, Report.timestamp < date_end)
 
+    # execute the query
+    result = db.execute(query)
+
+    # return a list of dict, that will be implicit converted as JSON after
+    return [r._asdict() for r in result]
+
+    
 

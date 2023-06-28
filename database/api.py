@@ -6,6 +6,8 @@ from starlette.responses        import RedirectResponse
 from sqlite             import models, db_handler as dba
 from sqlite.database   import SessionLocal, engine
 
+from datetime import datetime
+
 # Creates database from models module description
 models.Base.metadata.create_all(bind=engine)
 
@@ -43,9 +45,12 @@ def main():
 def insert(item: dba.Item, db: Session = Depends(get_db)):
     return dba.insert_reports(db, item)
 
-@app.post("/deleteReport")
-def delete(report_id: int, db: Session = Depends(get_db)):
-    return dba.delete_report(db, report_id)
+# delete a report or all report of a run by its ID
+@app.post("/deleteItem")
+def delete(report_id: int = None, run_id: int = None, db: Session = Depends(get_db)):
+    return dba.delete_item(db, report_id, run_id)
 
-
-
+# get all scores from all reports of a specific run (url), (optional: get scores between timestamps)
+@app.get("/getScores")
+def scores(url: str, start: datetime = None, end: datetime = None, db: Session = Depends(get_db)):
+    return dba.get_scores(db, url, start, end)

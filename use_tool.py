@@ -129,10 +129,10 @@ def Test(uri):
     print("Test API!")
 
     output = {
-        "test_tool": {
+        "test_tool6": {
             'scores': {
-                'score_1': 100,
-                'score_2': 74
+                'score_1': 89,
+                'score_2': 13
             },
             'notes': "Stringhe con note.",
             'json_report': None
