@@ -4,6 +4,8 @@ import click
 
 # Script to test tools's outputs and to print them
 
+run_reports = []
+
 @click.command()
 @click.argument("uri")
 @click.argument("test_type")
@@ -15,7 +17,7 @@ def main(uri, test_type):
         performanceTest,
         accessibilityTest,
         SEOTest,
-        validationTest
+        validationTest,
     ]
 
     t_start = int(time())
@@ -33,10 +35,14 @@ def main(uri, test_type):
         case "ALL":
             for test in tests:
                 test(uri)
+        case "TEST":
+            Test(uri)
         case _:
             return print("Test type not valid.")
     t_end = int(time())
     t_elapsed = t_end - t_start
+
+    pushToDB(uri)
 
     print("Elapsed time: ~" + [str(int((t_elapsed) / 60)) + " min", str(t_elapsed) + "s"][t_elapsed < 60] + ".\n")
 
@@ -51,7 +57,7 @@ def securityTest(uri):
     security_output = securitytest.run_test(uri)
     #print(security_output)
 
-    pushToDB(uri, "security", security_output)
+    addToReport("security", security_output)
 
     print("Security test ended.\n")
 
@@ -67,7 +73,7 @@ def performanceTest(uri):
     performance_output = performancetest.run_test(uri)
     #print(performance_output)
 
-    pushToDB(uri, "performance", performance_output)
+    addToReport("performance", performance_output)
 
     print("Performance test ended.\n")
     
@@ -81,7 +87,7 @@ def accessibilityTest(uri):
     accessibility_out = accessibilitytest.run_test(uri)
     #print(accessibility_out)
 
-    pushToDB(uri, "accessibility", accessibility_out)
+    addToReport("accessibility", accessibility_out)
 
     print("Accessibility test ended.\n")
 
@@ -97,7 +103,7 @@ def validationTest(uri):
     validation_out = validationtest.run_test(uri)
     #print(validation_out)
 
-    pushToDB(uri, "validation", validation_out)
+    addToReport("validation", validation_out)
 
     print("Validation test ended.\n")
 
@@ -112,34 +118,59 @@ def SEOTest(uri):
     seo_output = seotest.run_test(uri)
     #print(seo_output)
 
-    pushToDB(uri, "seo", seo_output)
+    addToReport("seo", seo_output)
 
     print("SEO test ended.\n")
 
 
-# Push a test result into the database using the custom API
-def pushToDB(url, type, output):
-    import requests
 
+def Test(uri):
+    print("Test API!")
+
+    output = {
+        "test_tool": {
+            'scores': {
+                'score_1': 100,
+                'score_2': 74
+            },
+            'notes': "Stringhe con note.",
+            'json_report': None
+        } 
+    }
+
+    addToReport("test_type", output)
+
+# Push a test result into the database using the custom API
+def addToReport(type, output):
     for tool in output:
         out = output[tool]
-        payload = {
-            "url": url,
-            "type": type,
-            "tool": tool,
-            "scores": out['scores'],
-            "notes": out['notes'],
-            "json_report": out['json_report']
-        }
 
-        try:
-            # api request to send report's data into the database
-            res = requests.post("http://localhost:8000/saveReport", json=payload)
-        except requests.exceptions.ConnectionError:
-            print("Connection error.\nShutting down...")
-            sys.exit(1)
+        run_reports.append({
+            'type': type,
+            'tool': tool,
+            'scores': out['scores'],
+            'notes': out['notes'],
+            'json_report': out['json_report']
+        })
 
-        
+def pushToDB(url):
+    import requests
+
+    payload = {
+        'url': url,
+        'reports': run_reports
+    }
+
+    try:
+        # api request to send report's data into the database
+        res = requests.post("http://localhost:8000/saveReport", json=payload)
+    except requests.exceptions.ConnectionError:
+        print("Connection error.\nShutting down...")
+        sys.exit(1)
+    finally:
+        run_reports.clear()
+
+
 
 # Main module
 if __name__ == "__main__":

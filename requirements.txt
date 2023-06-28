@@ -3,3 +3,4 @@ requests
 tinydb
 fastapi
 uvicorn[standard]
+sqlalchemy

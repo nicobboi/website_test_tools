@@ -1,5 +1,6 @@
-import models
+from .models import *
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 
 from pydantic import BaseModel
 from datetime import datetime
@@ -15,41 +16,48 @@ from datetime import datetime
 
 
 # model for the data received to insert into the database
-# TODO: deve diventare input della RUN (output tool messi tutti insieme)
-class Report(BaseModel):
+# reports: list of report with 'type', 'tool', 'scores', 'notes', json_report'
+class Item(BaseModel):
     url: str
-    type: str
-    tool: str
-    scores: dict | None
-    notes: str | None
-    json_report: dict | None
+    reports: list
 
 
 # DA SISTEMARE!!!!
-def insert_report(db: Session, report: Report):
-    run_record = models.Run(
-        urk=report.url,
-        timestamp=datetime.now(),
-    )
-
-    report_record = models.Report(
-        notes=report.notes,
-        json_report=report.json_report,
-    )
-
-    report_record.tools += [
-        models.Tool(
-            name=report.tool,
-            type=report.type
+def insert_report(db: Session, item: Item):
+    # Run model -> search if exists, and, if it doesn't, create a new one
+    run_result = db.execute(select(Run).where(Run.url == item.url)).first()
+    if run_result == None:
+        run_record = Run(
+            url=item.url,
         )
-    ]
+    else:
+        run_record = run_result[0]
 
-
-    for score_name, score in report.scores:
-        score_record = models.Tool(
-            name=score_name,
-            score=score
+    # All reports with tool and scores
+    for r in item.reports:
+        # REPORT
+        report_record = Report(
+            notes=r['notes'],
+            json_report=r['json_report'],
+            timestamp=datetime.now(),
         )
+
+        # SCORES
+        if r['scores'] != None:
+            for score_name, score in r['scores'].items():
+                report_record.scores.append(Score(name=score_name, score=score))
+        # TOOL
+        # checks if tool already exists, and added if not
+        tool_result = db.execute(select(Tool).where(Tool.name == r['tool'], Tool.type == r['type'])).first()
+        if tool_result: report_record.tool = tool_result[0] 
+        else: report_record.tool = Tool(name=r['tool'], type=r['type'])
+            
+        run_record.reports.append(report_record)
+
+    # add new elements and commit changes
+    db.add(run_record)
+    db.commit()
+
 
 
 

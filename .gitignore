@@ -164,5 +164,4 @@ bin/
 lib64
 pyvenv.cfg
 
-reports
-database/*.json
+database/*.db
