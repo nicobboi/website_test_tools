@@ -4,7 +4,7 @@ import click
 
 # Script to test tools's outputs and to print them
 
-# global list that stores all reports which will be sent to db 
+# global list to stores all reports which will be sent to db 
 run_reports = []
 
 @click.command()

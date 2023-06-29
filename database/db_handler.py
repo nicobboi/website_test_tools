@@ -1,4 +1,4 @@
-from .models import *
+from models import *
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 
@@ -11,7 +11,6 @@ from datetime import datetime
     https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html#adding-relationships-to-mapped-classes-after-declaration
 '''
 
-
 # model for the data received to insert into the database
 # reports: list of report with 'type', 'tool', 'scores', 'notes', json_report'
 class Item(BaseModel):
@@ -19,16 +18,15 @@ class Item(BaseModel):
     reports: list
 
 
+
 # push a set of reports into the database
 def insert_reports(db: Session, item: Item):
-    # Run model -> search if exists, and, if it doesn't, create a new one
-    run_result = db.execute(select(Run).where(Run.url == item.url)).first()
-    if run_result == None:
-        run_record = Run(
+    # Site model -> search if exists, and, if it doesn't, create a new one
+    site_record = db.scalars(select(Site).where(Site.url == item.url)).first()
+    if site_record == None:
+        site_record = Site(
             url=item.url,
         )
-    else:
-        run_record = run_result[0]
 
     # All reports with tool and scores
     for r in item.reports:
@@ -49,31 +47,31 @@ def insert_reports(db: Session, item: Item):
         if tool_result: report_record.tool = tool_result[0] 
         else: report_record.tool = Tool(name=r['tool'], type=r['type'])
             
-        run_record.reports.append(report_record)
+        site_record.reports.append(report_record)
 
     # add new elements and commit changes
-    db.add(run_record)
+    db.add(site_record)
     db.commit()
 
 
 # delete a report by his ID
-def delete_item(db: Session, report_id, run_id):
+def delete_item(db: Session, report_id, site_id):
     if report_id != None:
         db.delete(db.get(Report, report_id))
-    if run_id != None:
-        db.delete(db.get(Run, run_id))
+    if site_id != None:
+        db.delete(db.get(Site, site_id))
     db.commit()
 
 
-# return all scores form all report of a specified run (between two datetime if are given)
+# return all scores form all report of a specified site (between two datetime if are given)
 def get_scores(db: Session, url, date_start, date_end):
-    # Selects tools name and scores info of all the reports of the specified run
+    # Selects tools name and scores info of all the reports of the specified site
     query = select(Tool.name, Tool.type, Score.name, Score.score) \
         .join(Report, Tool.reports) \
-        .join(Run) \
-        .where(Run.url == url, Report.id == Score.report_id)
+        .join(Site) \
+        .where(Site.url == url, Report.id == Score.report_id)
     
-    # if specified, filter by datetime
+    # if specified, filter by datetime (TODO: DA TESTARE)
     if date_start != None and date_end != None:
         query = query.filter(Report.timestamp > date_start, Report.timestamp < date_end)
 
