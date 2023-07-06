@@ -1,6 +1,7 @@
 click
 requests
-tinydb
+
 fastapi
 uvicorn[standard]
+cookiecutter
 sqlalchemy

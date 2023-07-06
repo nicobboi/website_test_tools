@@ -126,12 +126,12 @@ def SEOTest(uri):
 
 # TEST FUNCTION to send data into the db 
 def Test(uri):
-    print("Test API!")
+    print("Test API!\n")
 
     output = {
         "test_tool6": {
             'scores': {
-                'score_1': 89,
+                'score_1': 89, 
                 'score_2': 13
             },
             'notes': "Stringhe con note.",
@@ -159,20 +159,40 @@ def addToReport(type, output):
 # Push a test result into the database using the custom API
 def pushToDB(url):
     import requests
+    from datetime import datetime
 
-    payload = {
-        'url': url,
-        'reports': run_reports
-    }
+    for report in run_reports:
+        payload = {
+            'notes': report['notes'],
+            'json_report': report['json_report'],
+            'timestamp': str(datetime.now()),
+            'tool': {
+                'name': report['tool'],
+                'type': report['type']
+            },
+            'scores': None,
+            'url': url
+        }
 
-    try:
-        # api request to send report's data into the database
-        res = requests.post("http://localhost:8000/saveReport", json=payload)
-    except requests.exceptions.ConnectionError:
-        print("Connection error.\nShutting down...")
-        sys.exit(1)
-    finally:
-        run_reports.clear()
+        if report['scores']:
+            payload['scores'] = [{
+                'name': name,
+                'score': score
+            } for name, score in report['scores'].items()]
+
+        try:
+            # api request to send report's data into the database
+            res = requests.post("http://localhost/api/v1/report/set", json=payload)
+            if res.status_code == 200:
+                print("Report \'" + report['tool'] +"\' sent.")
+            else:
+                print("Error sending report \'" + report['tool'] +"\'. Response: " + str(res.status_code) + ". Error:\n" + str(res.json()))
+        except requests.exceptions.ConnectionError:
+            print("Connection error.\nShutting down...")
+            sys.exit(1)
+
+    print("\nAll report sent.\n")
+    run_reports.clear()
 
 
 
