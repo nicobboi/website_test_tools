@@ -156,7 +156,7 @@ def addToReport(type, output):
             'json_report': out['json_report']
         })
 
-# Push a test result into the database using the custom API
+# Push a test result into the databa se using the custom API
 def pushToDB(url):
     import requests
     from datetime import datetime
@@ -186,7 +186,7 @@ def pushToDB(url):
             if res.status_code == 200:
                 print("Report \'" + report['tool'] +"\' sent.")
             else:
-                print("Error sending report \'" + report['tool'] +"\'. Response: " + str(res.status_code) + ". Error:\n" + str(res.json()))
+                print("Error sending report \'" + report['tool'] +"\'. Response: " + str(res.status_code) + ".")
         except requests.exceptions.ConnectionError:
             print("Connection error.\nShutting down...")
             sys.exit(1)
